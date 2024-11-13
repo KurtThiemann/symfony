@@ -93,8 +93,13 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
                 $body->seek(0);
             }
 
+            $headers = $request->getHeaders();
+            if (($size = $body->getSize()) !== null) {
+                $headers['Content-Length'] = [$size];
+            }
+
             $options = [
-                'headers' => $request->getHeaders(),
+                'headers' => $headers,
                 'body' => function (int $size) use ($body) {
                     return $body->read($size);
                 },
