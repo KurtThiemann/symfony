@@ -95,7 +95,9 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
 
             $options = [
                 'headers' => $request->getHeaders(),
-                'body' => $body->getContents(),
+                'body' => function (int $size) use ($body) {
+                    return $body->read($size);
+                },
             ];
 
             if ('1.0' === $request->getProtocolVersion()) {

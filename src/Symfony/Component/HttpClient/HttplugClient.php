@@ -231,7 +231,9 @@ final class HttplugClient implements ClientInterface, HttpAsyncClient, RequestFa
 
             $options = [
                 'headers' => $request->getHeaders(),
-                'body' => $body->getContents(),
+                'body' => function (int $size) use ($body) {
+                    return $body->read($size);
+                },
                 'buffer' => $buffer,
             ];
 
