@@ -664,7 +664,7 @@ abstract class HttpClientTestCase extends BaseHttpClientTestCase
         try {
             $client = $this->getHttpClient(__FUNCTION__);
 
-            $response = $client->request('HEAD', "http://localhost:8057/head", [
+            $response = $client->request('HEAD', 'http://localhost:8057/head', [
                 'body' => fn () => '',
             ]);
             $headers = $response->getHeaders();
@@ -672,10 +672,10 @@ abstract class HttpClientTestCase extends BaseHttpClientTestCase
             $p->stop();
         }
 
-        $this->assertArrayHasKey("x-request-vars", $headers);
+        $this->assertArrayHasKey('x-request-vars', $headers);
 
-        $vars = json_decode($headers["x-request-vars"][0], true);
+        $vars = json_decode($headers['x-request-vars'][0], true);
         $this->assertIsArray($vars);
-        $this->assertSame("HEAD", $vars["REQUEST_METHOD"]);
+        $this->assertSame('HEAD', $vars['REQUEST_METHOD']);
     }
 }
