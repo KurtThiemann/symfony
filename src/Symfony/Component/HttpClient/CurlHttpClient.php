@@ -197,13 +197,12 @@ final class CurlHttpClient implements HttpClientInterface, LoggerAwareInterface,
             $curlopts[\CURLOPT_RESOLVE] = $resolve;
         }
 
+        $curlopts[\CURLOPT_CUSTOMREQUEST] = $method;
         if ('POST' === $method) {
             // Use CURLOPT_POST to have browser-like POST-to-GET redirects for 301, 302 and 303
             $curlopts[\CURLOPT_POST] = true;
         } elseif ('HEAD' === $method) {
             $curlopts[\CURLOPT_NOBODY] = true;
-        } else {
-            $curlopts[\CURLOPT_CUSTOMREQUEST] = $method;
         }
 
         if ('\\' !== \DIRECTORY_SEPARATOR && $options['timeout'] < 1) {
@@ -317,6 +316,13 @@ final class CurlHttpClient implements HttpClientInterface, LoggerAwareInterface,
         }
 
         foreach ($curlopts as $opt => $value) {
+
+            foreach (get_defined_constants() as $key => $val) {
+                if ($val == $opt && str_starts_with($key, 'CURLOPT_')) {
+                    echo $key . ": " . var_export($value, true) . "\n";
+                }
+            }
+
             if (null !== $value && !curl_setopt($ch, $opt, $value) && \CURLOPT_CERTINFO !== $opt && (!\defined('CURLOPT_HEADEROPT') || \CURLOPT_HEADEROPT !== $opt)) {
                 $constantName = $this->findConstantName($opt);
                 throw new TransportException(\sprintf('Curl option "%s" is not supported.', $constantName ?? $opt));
